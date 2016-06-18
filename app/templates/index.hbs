@@ -1,0 +1,9 @@
+<p>Here are all the food items we have in our DB:</p>
+{{#each model as |item|}}
+  <ul>
+    <li>{{item.author}}</li>
+    <li>{{item.food}}</li>
+  </ul>
+{{/each}}
+<hr>
+<button {{action 'createItem'}}>Create New Food Item</button>
