@@ -7,7 +7,7 @@ let Item = require('../models/item');
 // ==============================================
 
 // Create /api/items endpoint
-exports.postItem = (req, res) => {
+exports.postItem = function (req, res) {
   // POST a new food item
   let item = new Item();
 
@@ -15,15 +15,15 @@ exports.postItem = (req, res) => {
   item.food = req.body.item.food;
 
   // save the new item and check for errors
-  item.save((e) => {
+  item.save(function (e) {
     if (e) { res.send(e); }
 
     res.json({ item: item });
   });
 };
 
-exports.getItems = (req, res) => {
-  Item.find((e, items) => {
+exports.getItems = function (req, res) {
+  Item.find(function (e, items) {
     if (e) { res.send({ error: e }); }
 
     res.json({ items: items });
@@ -31,23 +31,23 @@ exports.getItems = (req, res) => {
 };
 
 // Create /api/items/:id endpoint
-exports.getItem = (req, res) => {
-  Item.findById(req.params.id, (e, item) => {
+exports.getItem = function (req, res) {
+  Item.findById(req.params.id, function (e, item) {
     if (e) { res.send(e); }
 
     res.json({ item: item });
   });
 };
 
-exports.putItem = (req, res) => {
-  Item.findById(req.params.id, (e, item) => {
+exports.putItem = function (req, res) {
+  Item.findById(req.params.id, function (e, item) {
     if (e) { res.send(e); }
 
     item.author = req.body.author;
     item.food = req.body.food;
 
     // save the changes
-    item.save((e) => {
+    item.save(function (e) {
       if (e) { res.send(e); }
 
       res.json({ item: item });
@@ -55,10 +55,10 @@ exports.putItem = (req, res) => {
   });
 };
 
-exports.deleteItem = (req, res) => {
+exports.deleteItem = function (req, res) {
   Item.remove({
     _id: req.params.id
-  }, (e, item) => {
+  }, function (e, item) {
     if (e) { res.send(e); }
 
     res.json({});

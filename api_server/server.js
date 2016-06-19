@@ -16,8 +16,6 @@ let userRoutes = require('./routes/user');
 let mongoose = require('mongoose');
 mongoose.connect('mongodb://ember:soccer15@ds031183.mlab.com:31183/freezr_dev');
 
-// let Item = require('./models/item');
-
 // Configure the app to use the below headers/ access
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
