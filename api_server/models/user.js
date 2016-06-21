@@ -2,6 +2,7 @@
 
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt-nodejs');
+let eat = require('eat');
 
 let UserSchema = mongoose.Schema({
   username: { type: String, unique: true },
@@ -41,6 +42,10 @@ UserSchema.methods.verifyPassword = function (password, callback) {
 
     callback(null, isMatch);
   });
+};
+
+UserSchema.methods.generateToken = function (secret, callback) {
+  eat.encode({ id: this._id }, secret, callback);
 };
 
 // Export the model

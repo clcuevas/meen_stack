@@ -31,3 +31,11 @@ exports.getUsers = function (req, res) {
     res.json({ users: users });
   });
 };
+
+exports.loginUser = function (req, res) {
+  req.user.generateToken(process.env.APP_SECRET, function(err, token) {
+    if (err) return res.status(500).json({msg: 'error generating token'});
+
+    res.json({msg: 'authenticated as: ' + req.user.basic.email, username: req.user.username, token: token});
+  });//end generateToken
+};

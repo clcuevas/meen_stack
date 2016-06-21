@@ -1,0 +1,22 @@
+<form class="form-horizontal" {{action 'signIn' on="submit"}}>
+  {{#if loginFailed}}
+    <div class="alert alert-danger">Invalid username or password.</div>
+  {{/if}}
+  <div class="control-group">
+    <div class="control-label">
+      <label>Username:</label>
+    </div>
+    <div class="controls">
+      {{input value=username type="text"}}
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">
+      <label>Password:</label>
+    </div>
+    <div class="controls">
+      {{input value=password type="password"}}
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default">Sign In!</button>
+</form>

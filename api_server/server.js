@@ -1,6 +1,8 @@
 'use strict';
 // BASE SETUP
 // ===============================================
+//this will be configured in heroku
+process.env.APP_SECRET = process.env.APP_SECRET || 'changethis';
 
 // Call the packages that are needed
 let express = require('express');
@@ -19,7 +21,7 @@ mongoose.connect('mongodb://ember:soccer15@ds031183.mlab.com:31183/freezr_dev');
 // Configure the app to use the below headers/ access
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
   next();
 });
@@ -54,6 +56,9 @@ router.route('/items/:id')
 router.route('/users')
   .post(userRoutes.postUser)
   .get(auth.isAuthenticated, userRoutes.getUsers);
+
+router.route('/signin')
+  .post(auth.isAuthenticated, userRoutes.loginUser);
 
 // REGISTER ROUTES
 // ================================================
