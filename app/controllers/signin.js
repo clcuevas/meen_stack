@@ -7,24 +7,24 @@ export default Controller.extend({
 
   actions: {
     signIn() {
-      let username = this.get('username');
+      let email = this.get('email');
       let password = this.get('password');
+      let transition = () => this.transitionToRoute('/');
 
       $.ajax({
         type: 'POST',
-        url: 'http://localhost:8080/api/signin',
+        url: 'http://localhost:8080/api/signIn',
+        contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         async: true,
+        email: email,
+        password: password,
         beforeSend: function (xhr) {
-          xhr.setRequestHeader ("Authorization", "Basic " + btoa(username + ":" + password));
-        },
-        success: function (data) {
-          console.log(data);
-          // Navigate to the 'index' route when a login
-          // has been successful
-          // transition();
-          window.location.href = '/';
+          xhr.setRequestHeader ("Authorization", "Basic " + btoa(email + ":" + password));
         }
+      }).then((data) => {
+        window.location.href = '/';
+        return data;
       });
     }
   }

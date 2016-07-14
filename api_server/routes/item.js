@@ -2,6 +2,7 @@
 
 // Load required packages
 let Item = require('../models/item');
+let User = require('../models/user');
 
 // CREATE ENDPOINTS
 // ==============================================
@@ -23,6 +24,7 @@ exports.postItem = function (req, res) {
 };
 
 exports.getItems = function (req, res) {
+  console.log(req);
   Item.find(function (e, items) {
     if (e) { res.send({ error: e }); }
 

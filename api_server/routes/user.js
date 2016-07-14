@@ -12,8 +12,8 @@ exports.postUser = function (req, res) {
 
   let user = new User({
     username: newUserData.username,
-    'basic.email': newUserData.email,
-    'basic.password': newUserData.password
+    email: newUserData.email,
+    password: newUserData.password
   });
 
   user.save(function (err) {
@@ -33,9 +33,9 @@ exports.getUsers = function (req, res) {
 };
 
 exports.loginUser = function (req, res) {
-  req.user.generateToken(process.env.APP_SECRET, function(err, token) {
-    if (err) return res.status(500).json({msg: 'error generating token'});
+  User.findById(req.user._id, function (err, user) {
+    if (err) res.send(err);
 
-    res.json({msg: 'authenticated as: ' + req.user.basic.email, username: req.user.username, token: token});
-  });//end generateToken
+    res.json({ user: user });
+  });
 };
