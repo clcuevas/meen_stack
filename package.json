@@ -19,13 +19,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.15.1",
     "express": "4.14.0",
-    "mongoose": "4.5.0"
+    "mongoose": "4.5.0",
+    "passport": "0.3.2",
+    "passport-http": "0.3.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "2.4.2",
+    "eat": "0.2.1",
     "ember-ajax": "0.7.1",
+    "ember-bootstrap": "0.7.2",
     "ember-cli": "2.5.1",
     "ember-cli-app-version": "1.0.0",
     "ember-cli-babel": "5.1.6",

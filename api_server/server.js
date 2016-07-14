@@ -1,28 +1,39 @@
 'use strict';
 // BASE SETUP
 // ===============================================
+//this will be configured in heroku
+process.env.APP_SECRET = process.env.APP_SECRET || 'changethis';
 
 // Call the packages that are needed
 let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
+let passport = require('passport');
+
+let auth = require('./lib/auth');
+
+let itemRoutes = require('./routes/item');
+let userRoutes = require('./routes/user');
 
 let mongoose = require('mongoose');
 mongoose.connect('mongodb://ember:soccer15@ds031183.mlab.com:31183/freezr_dev');
 
-let Item = require('./models/item');
-
 // Configure the app to use the below headers/ access
-app.use((req, res, next) => {
+app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, API_KEY, Authorization");
   res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
   next();
 });
 
+// set the static files location for our Ember application
+app.use(express.static(__dirname + '../app/public'));
+
 // Configure the app to use bodyParser()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+// Use the passport package in the app
+app.use(passport.initialize());
 
 let port = process.env.PORT || 8080;
 
@@ -33,69 +44,24 @@ let router = express.Router();
 // For routes that end with /items
 // -----------------------------------------------
 router.route('/items')
-  // POST a new food item
-  .post((req, res) => {
-    let item = new Item();
-
-    item.author = req.body.item.author;
-    item.food = req.body.item.food;
-
-    // save the new item and check for errors
-    item.save((e) => {
-      if (e) { res.send(e); }
-
-      res.json({ item: item });
-    });
-  })
-  // GET all food items
-  .get((req, res) => {
-
-    Item.find((e, items) => {
-      if (e) { res.send({ error: e }); }
-
-      res.json({ items: items });
-    });
-  });
+  .post(auth.isAuthenticated, itemRoutes.postItem)
+  .get(auth.isAuthenticated, itemRoutes.getItems);
 
 // For routes that end with /items/:id
-// -------------------------------------------------
+// -----------------------------------------------
 router.route('/items/:id')
-  // GET a single food item
-  .get((req, res) => {
-    Item.findById(req.params.id, (e, item) => {
-      if (e) { res.send(e); }
+  .get(auth.isAuthenticated, itemRoutes.getItem)
+  .put(auth.isAuthenticated, itemRoutes.putItem)
+  .delete(auth.isAuthenticated, itemRoutes.deleteItem);
 
-      res.json({ item: item });
-    });
-  })
-  // Update (i.e. PUT) a food item
-  .put((req, res) => {
-    Item.findById(req.params.id, (e, item) => {
-      if (e) { res.send(e); }
+// For routes that end with /users
+// -----------------------------------------------
+router.route('/users')
+  .post(userRoutes.postUser)
+  .get(auth.isAuthenticated, userRoutes.getUsers);
 
-      item.author = req.body.author;
-      item.food = req.body.food;
-
-      // save the changes
-      item.save((e) => {
-        if (e) { res.send(e); }
-
-        res.json({ item: item });
-      });
-    });
-  })
-  // DELETE a food item
-  .delete((req, res) => {
-    Item.remove({
-      _id: req.params.id
-    }, (e, item) => {
-      if (e) { res.send(e); }
-
-      res.json({});
-    });
-  });
-
-// Add more API route methods here
+router.route('/signin')
+  .post(auth.isAuthenticated, userRoutes.loginUser);
 
 // REGISTER ROUTES
 // ================================================
